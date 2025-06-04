@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupperChat", "SupperChat\SupperChat.csproj", "{8E06735B-C041-456B-B1CA-D9DD5E47AF0B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E06735B-C041-456B-B1CA-D9DD5E47AF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E06735B-C041-456B-B1CA-D9DD5E47AF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E06735B-C041-456B-B1CA-D9DD5E47AF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E06735B-C041-456B-B1CA-D9DD5E47AF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E762CDD8-A4EB-40BD-9C75-8DC1D2DD633F}
+	EndGlobalSection
+EndGlobal
