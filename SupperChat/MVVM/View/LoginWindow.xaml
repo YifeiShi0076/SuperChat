@@ -1,12 +1,83 @@
 ﻿<Window x:Class="SupperChat.MVVM.View.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SupperChat.MVVM.View"
+        xmlns:local="clr-namespace:SupperChat.MVVM.View" xmlns:viewmodel="clr-namespace:SupperChat.MVVM.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:LoginViewModel}"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="450" Width="800">
+        Title="用户注册/登录" Height="500" Width="400">
     <Grid>
-        
+        <Border Background="#B0CCE1" 
+                CornerRadius="10" 
+                Padding="20" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Width="300" Cursor="">
+            <StackPanel>
+                <!-- 标题 -->
+                <TextBlock Text="{Binding TitleText}" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,20"/>
+                
+                <!-- 用户名 -->
+                <TextBlock Text="用户名" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
+                         Margin="0,5,0,15" 
+                         Height="30"
+                         FontSize="14"
+                         VerticalContentAlignment="Center"/>
+
+                <!-- 密码 -->
+                <TextBlock Text="密码" FontWeight="SemiBold" />
+                <PasswordBox x:Name="PasswordBox" 
+                             Margin="0,5,0,15" 
+                             Height="30"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"
+                             PasswordChanged="PasswordBox_PasswordChanged"/>
+
+                <!-- 如果是注册，展示额外信息 -->
+                <StackPanel Visibility="{Binding IsRegistering, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="昵称" FontWeight="SemiBold" />
+                    <TextBox Text="{Binding Nickname, UpdateSourceTrigger=PropertyChanged}" 
+                             Margin="0,5,0,15" 
+                             Height="30"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"/>
+
+                    <TextBlock Text="个性签名" FontWeight="SemiBold" />
+                    <TextBox Text="{Binding Signature, UpdateSourceTrigger=PropertyChanged}" 
+                             Margin="0,5,0,15" 
+                             Height="30"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <!-- 登录/注册按钮 -->
+                <Button Content="{Binding ButtonText}" 
+                        Command="{Binding SubmitCommand}"
+                        Height="40" 
+                        Background="#EAD6EE" 
+                        Foreground="Black"
+                        BorderThickness="0"
+                        Margin="0,10,0,0"
+                        FontSize="16"
+                        Cursor="Hand"
+                        />
+
+                <!-- 底部切换 -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                    <TextBlock Text="{Binding SwitchTipText}" />
+                    <TextBlock Text="{Binding SwitchLinkText}"
+                               Foreground="Blue"
+                               Cursor="Hand"
+                               MouseLeftButtonUp="SwitchRegisterLogin"
+                               Margin="5,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

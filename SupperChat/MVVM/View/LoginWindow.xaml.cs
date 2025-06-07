@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SupperChat.MVVM.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,25 @@ namespace SupperChat.MVVM.View
 		public LoginWindow()
 		{
 			InitializeComponent();
+			DataContext = new LoginViewModel();
+
 		}
+		private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+		{
+			if (DataContext is LoginViewModel vm)
+			{
+				vm.SetPassword(((PasswordBox)sender).Password);
+			}
+		}
+
+		private void SwitchRegisterLogin(object sender, MouseButtonEventArgs e)
+		{
+			if (DataContext is LoginViewModel vm)
+			{
+				vm.SwitchRegistering();
+			}
+		}
+
+
 	}
 }

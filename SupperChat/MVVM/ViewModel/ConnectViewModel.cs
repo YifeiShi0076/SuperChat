@@ -1,12 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
+using System.Windows.Input;
+using SupperChat.Core;
+using SupperChat.MVVM.View;
+using SupperChat.Services;
 
 namespace SupperChat.MVVM.ViewModel
 {
-	internal class ConnectViewModel
+	class ConnectViewModel : ObservableObject
 	{
+		private string _host;
+		public string Host
+		{
+			get => _host;
+			set { _host = value; OnPropertyChanged(); }
+		}
+
+		private string _port;
+		public string Port
+		{
+			get => _port;
+			set { _port = value; OnPropertyChanged(); }
+		}
+
+		public ICommand ConnectCommand { get; }
+
+		public ConnectViewModel()
+		{
+			ConnectCommand = new RelayCommand(ConnectToRedis);
+		}
+
+		private void ConnectToRedis(object obj)
+		{
+			if (RedisService.Connect(Host, int.Parse(Port)))
+			{
+				MessageBox.Show("连接成功！");
+
+				// 打开登录窗口
+				var loginWindow = new LoginWindow();
+				loginWindow.Show();
+
+				// 关闭当前连接窗口
+				Application.Current.Windows[0]?.Close();
+			}
+			else
+			{
+				MessageBox.Show("连接失败，请检查地址和端口！");
+			}
+		}
 	}
 }

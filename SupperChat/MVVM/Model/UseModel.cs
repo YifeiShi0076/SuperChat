@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SupperChat.MVVM.Model
+﻿namespace SupperChat.MVVM.Model
 {
-	internal class UseModel
+	public class UserModel
 	{
+		public string Username { get; set; }
+		public string Password { get; set; }  // 密码会加密存储
+		public string Nickname { get; set; }
+		public string AvatarUrl { get; set; }
+		public string Signature { get; set; }
 	}
 }
