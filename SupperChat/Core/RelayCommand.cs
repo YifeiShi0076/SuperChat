@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace SupperChat.Core
 {
-	internal class RelayCommand : ICommand
+	public class RelayCommand : ICommand
 	{
 		private Action<object> _execute;
 		private Func<object, bool> _canExecute;

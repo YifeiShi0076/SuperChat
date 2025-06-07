@@ -32,21 +32,25 @@ namespace SupperChat.Service
 		{
 			var key = UserKey(user.Username);
 
-			if(await db.KeyExistsAsync(key))
+			if (await db.KeyExistsAsync(key))
 			{
 				return false; // 用户已存在
 			}
 
 			var hashEntries = new HashEntry[]
 			{
-				new HashEntry("Password", EncryptPassword(user.Password)),
-				new HashEntry("Nickname", user.Nickname ?? user.Nickname ?? user.Username),
-				new HashEntry("AvatarUrl", user.AvatarUrl ?? ""),
-				new HashEntry("Signature", user.Signature ?? "这个人很懒，什么也没有留下。")
+		new HashEntry("Password", EncryptPassword(user.Password)),
+		new HashEntry("Nickname", user.Nickname ?? user.Username),
+		new HashEntry("AvatarUrl", user.AvatarUrl ?? ""),
+		new HashEntry("Signature", user.Signature ?? "这个人很懒，什么也没有留下。")
 			};
-			await db.StringSetAsync(key, user.Password);
+
+			// 正确保存为 Hash 类型
+			await db.HashSetAsync(key, hashEntries);
+
 			return true;
 		}
+
 
 		// 登录验证
 		public static async Task<bool> Login(string username, string password)

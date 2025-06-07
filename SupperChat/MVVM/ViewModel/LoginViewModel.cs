@@ -5,6 +5,7 @@ using SupperChat.Core;
 using SupperChat.MVVM.Model;
 using SupperChat.Service;
 using SupperChat.Services;
+using Microsoft.Win32;
 
 namespace SupperChat.MVVM.ViewModel
 {
@@ -57,10 +58,29 @@ namespace SupperChat.MVVM.ViewModel
 
 		public ICommand SubmitCommand { get; }
 
+		public string AvatarUrl
+		{
+			get => _avatarUrl;
+			set { _avatarUrl = value; OnPropertyChanged(); }
+		}
+		private string _avatarUrl;
+
+		public ICommand SelectAvatarCommand { get; }
 		public LoginViewModel()
 		{
 			SubmitCommand = new RelayCommand(async o => await Submit());
+			SelectAvatarCommand = new RelayCommand(o => SelectAvatar());
 			IsRegistering = false;
+		}
+
+		private void SelectAvatar()
+		{
+			var dialog = new OpenFileDialog();
+			dialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+			if (dialog.ShowDialog() == true)
+			{
+				AvatarUrl = dialog.FileName;
+			}
 		}
 
 		public void SetPassword(string pwd)
@@ -80,15 +100,23 @@ namespace SupperChat.MVVM.ViewModel
 				MessageBox.Show("用户名和密码不能为空！");
 				return;
 			}
+			string avatarPath = AvatarUrl;
+			if (string.IsNullOrEmpty(avatarPath))
+			{
+				avatarPath = AvatarService.GenerateRandomAvatar(Nickname ?? Username); // 生成自动头像
+			}
 
 			if (IsRegistering)
+
+
 			{
 				var user = new UserModel
 				{
 					Username = Username,
 					Password = Password,
 					Nickname = Nickname,
-					Signature = Signature
+					Signature = Signature,
+					AvatarUrl = avatarPath
 				};
 
 				if (await UserService.Register(user))
@@ -107,8 +135,10 @@ namespace SupperChat.MVVM.ViewModel
 				{
 					MessageBox.Show("登录成功！");
 
-					// 打开主聊天窗口
-					var mainWindow = new MainWindow();
+					var userInfo = await UserService.GetUserInfo(Username);
+
+					// 打开主聊天窗口，并传递用户信息
+					var mainWindow = new MainWindow(userInfo);
 					mainWindow.Show();
 
 					// 关闭登录窗口
@@ -120,5 +150,7 @@ namespace SupperChat.MVVM.ViewModel
 				}
 			}
 		}
+
+
 	}
 }

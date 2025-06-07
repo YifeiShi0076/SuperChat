@@ -13,34 +13,34 @@
       AllowsTransparency="True"
       ResizeMode="CanResizeWithGrip">
 
-  <Window.DataContext>
-      <viewmodel:MainViewModel/>
-  </Window.DataContext>
-  <Grid>
-      <Grid.RowDefinitions>
-          <RowDefinition Height="25"/>
-          <RowDefinition/>
-      </Grid.RowDefinitions>
+    <!-- <Window.DataContext> 
+         <viewmodel:MainViewModel/>
+    </Window.DataContext> -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-      <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="200"/>
-          <ColumnDefinition/>
-      </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
 
-      <Border Grid.ColumnSpan="2"
+        <Border Grid.ColumnSpan="2"
               Background="White"
               MouseDown="Border_MouseDown">
 
-          <Grid HorizontalAlignment="Stretch">
-              <Label Content="SupperChat"
+            <Grid HorizontalAlignment="Stretch">
+                <Label Content="SupperChat"
                      Foreground="Gray"
                      FontWeight="SemiBold"/>
 
-              <StackPanel HorizontalAlignment="Right"
+                <StackPanel HorizontalAlignment="Right"
                           Orientation="Horizontal">
 
-                   <Button Width="20" Height="20"
+                    <Button Width="20" Height="20"
                            Content="🗕"
                            Background="Transparent"
                            BorderThickness="0"
@@ -49,7 +49,7 @@
                            Margin="0,0,0,3"
                            Click="ButtonMinimize_Click"/>
 
-                   <Button Width="20" Height="20"
+                    <Button Width="20" Height="20"
                            Content="◼"
                            Background="Transparent"
                            BorderThickness="0"
@@ -57,27 +57,27 @@
                            FontWeight="Bold"
                            Click="ButtonMaximize_Click"/>
 
-                   <Button Width="20" Height="20"
+                    <Button Width="20" Height="20"
                           Content="✖"
                           Background="Transparent"
                           BorderThickness="0"
                           Foreground="Gray"
                           FontWeight="Bold"
                           Click="CloseButton_Click"/>
-              </StackPanel>
-          </Grid>
-          
-      </Border>
-      
-      <Grid Background="White"
-          Grid.Row="1">
-           <Grid.RowDefinitions>
-               <RowDefinition Height="50"/>
-               <RowDefinition/>
-               <RowDefinition Height="60"/>
-           </Grid.RowDefinitions>
+                </StackPanel>
+            </Grid>
 
-           <Label Content="Contacts"
+        </Border>
+
+        <Grid Background="White"
+          Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+            <Label Content="Contacts"
                   VerticalAlignment="Center"
                   FontWeight="Medium"
                   Foreground="Black"
@@ -90,32 +90,39 @@
                       Grid.Row="1"
                       ItemContainerStyle="{StaticResource ContactCard}" SelectionChanged="ListView_SelectionChanged"/>
 
+            <Button Content="➕"
+                    Width="30" Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="10,10,10,10"
+                    Background="#409aff"
+                    Foreground="White"
+                    FontSize="15"
+                    BorderBrush="Transparent"
+                    Cursor="Hand"
+                    Command="{Binding AddContactCommand}" />
 
+            <!-- 用户信息显示区 -->
             <StackPanel Grid.Row="2"
-                      Orientation="Horizontal"
-                      Background="#FFE2E2E2"
+                        Orientation="Horizontal"
+                        Background="#FFE2E2E2"
                         Margin="5,5,5,5">
-
-
-                <Ellipse Width="30" Height="30"
-                         Margin="15,0,0,0">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="/Icons/TestPicture.png"
-                                    Stretch="Uniform"
-                                    RenderOptions.BitmapScalingMode="Fant"/>
+                            <Ellipse Width="30" Height="30"
+                                     Margin="15,0,0,0">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding CurrentUser.AvatarUrl}" Stretch="UniformToFill"/>
                     </Ellipse.Fill>
+                            </Ellipse>
 
-                </Ellipse>
-
-                <StackPanel VerticalAlignment="Center">
-                    <Label Content="Username"
+                <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Label Content="{Binding CurrentUser.Nickname}" 
                            Foreground="Black"
                            FontWeight="SemiBold"
-                           Margin="0,-5,-5,0"/>
-                    <Label Content="Custom Status"
-                           Foreground="Green"
+                           Margin="0,-5,0,0"/>
+                    <Label Content="{Binding CurrentUser.Signature}"
+                           Foreground="Gray"
                            FontSize="10"
-                           Margin="0,-8,-5,0"/>
+                           Margin="0,-8,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -123,13 +130,14 @@
         <Grid Grid.Column="1"
               Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="30.333"/>
+                <RowDefinition Height="19.667"/>
                 <RowDefinition/>
                 <RowDefinition Height="70"/>
             </Grid.RowDefinitions>
 
             <Border BorderBrush="#2F3136"
-                    BorderThickness="0,0,0,2">
+                    BorderThickness="0,0,0,2" Grid.RowSpan="2">
                 <Grid HorizontalAlignment="Stretch"
                       Margin="8">
 
@@ -149,7 +157,7 @@
                         <Image Width="20" Height="20"
                                RenderOptions.BitmapScalingMode="Fant"
                                Margin="5,0,5,0"
-                               Source="/Icons/camera.png"/>       
+                               Source="/Icons/camera.png"/>
                     </StackPanel>
 
                 </Grid>
@@ -160,9 +168,9 @@
                       BorderThickness="0"
                       ItemContainerStyle="{StaticResource ChatItem}"
                       Margin="8,0,0,0"
-                      Grid.Row="1"/>
+                      Grid.Row="2"/>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="90"/>
@@ -183,16 +191,16 @@
                            Width="20" Height="20"
                            RenderOptions.BitmapScalingMode="Fant"
                            Margin="5,5,5,0"/>
-                    
-        
+
+
                     <Image Source="/Icons/send.png"
                            Width="20" Height="20"
                            RenderOptions.BitmapScalingMode="Fant"
-                           Margin="5,5,16,0"/>           
+                           Margin="5,5,16,0"/>
                 </StackPanel>
-                            
+
             </Grid>
 
         </Grid>
-  </Grid> 
+    </Grid>
 </Window>

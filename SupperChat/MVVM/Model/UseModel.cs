@@ -7,5 +7,6 @@
 		public string Nickname { get; set; }
 		public string AvatarUrl { get; set; }
 		public string Signature { get; set; }
+
 	}
 }

@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SupperChat.MVVM.Model;
+using SupperChat.MVVM.ViewModel;
 
 namespace SupperChat
 {
@@ -16,10 +18,13 @@ namespace SupperChat
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+		private readonly MainViewModel _viewModel;
+		public MainWindow(UserModel userInfo)
         {
 			InitializeComponent();
-        }
+			_viewModel = new MainViewModel(userInfo);
+			this.DataContext = _viewModel;
+		}
 
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{

@@ -1,97 +1,113 @@
 ﻿using SupperChat.Core;
 using SupperChat.MVVM.Model;
-using System;
-using System.Collections.Generic;
+using SupperChat.Services;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 
 namespace SupperChat.MVVM.ViewModel
 {
-	class MainViewModel:ObservableObject
+	public class MainViewModel : ObservableObject
 	{
-		public ObservableCollection<MessageModel> Messages { get; set; }
+		private readonly UserModel _currentUser;
+
 		public ObservableCollection<ContactModel> Contacts { get; set; }
-
-		/* Command */
 		public RelayCommand SendCommand { get; set; }
+		public RelayCommand AddContactCommand { get; set; }
+
 		private ContactModel _selectedContact;
-		public ContactModel SelectedContact {
-			get { return _selectedContact; }
-			set { _selectedContact = value; 
-				OnPropertyChanged();
-			}
-		}
-		private string _message;
-		public string Message { 
-			get { return _message; }
-			set { _message = value; 
-				OnPropertyChanged(); 
-			}
-		}
-		public MainViewModel()
+		public ContactModel SelectedContact
 		{
-			Messages = new ObservableCollection<MessageModel>();
-			Contacts = new ObservableCollection<ContactModel>();
-
-			SendCommand = new RelayCommand(o =>
+			get => _selectedContact;
+			set
 			{
-				if (string.IsNullOrEmpty(Message)) return;
-				Messages.Add(new MessageModel
-				{
-					Message = Message,
-					FirstMessage = false
-				});
-				Message = string.Empty;
-			});
-
-			Messages.Add(new MessageModel
-			{
-				Username = "John Doe",
-				UsernameColor = "#409aff",
-				ImageSource = "../Icons/1.jpg",
-				Message = "Hello, this is a test message from John!",
-				Time = DateTime.Now,
-				IsNativeOrigin = false,
-				FirstMessage = true
-			});
-
-			for (int i = 0; i < 1; i++)
-			{
-				Messages.Add(new MessageModel
-				{
-					Username = "Bunny",
-					UsernameColor = "#409aff",
-					ImageSource = "../Icons/0.jpg",
-					Message = "Hello, this is a test message from Bunny!",
-					Time = DateTime.Now,
-					IsNativeOrigin = true
-				});
-			}
-
-			for (int i = 0; i < 1; i++)
-			{
-				Messages.Add(new MessageModel
-				{
-					Username = "Bunny",
-					UsernameColor = "#409aff",
-					ImageSource = "../Icons/0.jpg",
-					Message = "Last Message.",
-					Time = DateTime.Now,
-					IsNativeOrigin = true
-				});
-			}
-
-			for (int i = 0; i < 3; i++)
-			{
-				Contacts.Add(new ContactModel
-				{
-					Username = $"Allison{i}",
-					ImageSource = "../Icons/1.jpg",
-					Messages = Messages
-				});
+				_selectedContact = value;
+				OnPropertyChanged();
+				LoadMessagesForSelectedContact();
 			}
 		}
+
+		private string _message;
+		public string Message
+		{
+			get => _message;
+			set { _message = value; OnPropertyChanged(); }
+		}
+
+		private ObservableCollection<MessageModel> _messages;
+		public ObservableCollection<MessageModel> Messages
+		{
+			get => _messages;
+			set { _messages = value; OnPropertyChanged(); }
+		}
+
+		public MainViewModel(UserModel currentUser)
+		{
+			_currentUser = currentUser;
+			Contacts = new ObservableCollection<ContactModel>();
+			Messages = new ObservableCollection<MessageModel>();
+
+			SendCommand = new RelayCommand(async o => await SendMessage());
+			AddContactCommand = new RelayCommand(o => AddContactOrGroup());
+
+			LoadContacts();
+		}
+
+		private async void LoadContacts()
+		{
+			var contacts = await ChatService.GetContactsAsync(_currentUser.Username);
+			foreach (var contact in contacts)
+			{
+				Contacts.Add(contact);
+			}
+		}
+
+		private async void LoadMessagesForSelectedContact()
+		{
+			if (SelectedContact != null)
+			{
+				Messages.Clear();
+				var chatHistory = await ChatService.GetChatHistory(_currentUser.Username, SelectedContact.Username);
+				foreach (var msg in chatHistory)
+				{
+					Messages.Add(msg);
+				}
+
+				// 开始订阅该联系人的频道
+				ChatService.SubscribeToChannel(SelectedContact.Username, OnMessageReceived);
+			}
+		}
+
+		private void OnMessageReceived(MessageModel message)
+		{
+			App.Current.Dispatcher.Invoke(() => Messages.Add(message));
+		}
+
+		private async Task SendMessage()
+		{
+			if (string.IsNullOrEmpty(Message) || SelectedContact == null) return;
+
+			var newMessage = new MessageModel
+			{
+				Username = _currentUser.Nickname,
+				UsernameColor = "#409aff",
+				ImageSource = _currentUser.AvatarUrl,
+				Message = Message,
+				Time = DateTime.Now,
+				IsNativeOrigin = true
+			};
+
+			await ChatService.SendMessageAsync(SelectedContact.Username, newMessage);
+
+			Messages.Add(newMessage);
+			Message = string.Empty;
+		}
+
+		private void AddContactOrGroup()
+		{
+			// 这里可以弹窗输入新联系人名字，或者新建群聊
+		}
+
+		public UserModel CurrentUser => _currentUser;
 	}
 }
