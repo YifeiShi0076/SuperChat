@@ -84,35 +84,84 @@
                   Margin="20,0,0,0" Background="White"/>
 
             <ListView ItemsSource="{Binding Contacts}"
-                      SelectedItem="{Binding SelectedContact}"
-                      Background="White"
-                      BorderThickness="0"
-                      Grid.Row="1"
-                      ItemContainerStyle="{StaticResource ContactCard}" SelectionChanged="ListView_SelectionChanged"/>
+          SelectedItem="{Binding SelectedContact}"
+          Background="White"
+          BorderThickness="0"
+          Grid.Row="1"
+          ItemContainerStyle="{StaticResource ContactCard}"
+          SelectionChanged="ListView_SelectionChanged">
 
-            <Button Content="➕"
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- 头像 -->
+                            <Image Source="{Binding ImageSource}" Width="40" Height="40" Margin="5"/>
+
+                            <!-- 用户名和最后消息 -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding Username}" FontSize="14" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding LastMessage}" FontSize="12" Foreground="Gray" />
+                            </StackPanel>
+
+                            <!-- 小红点 -->
+                            <Border Grid.Column="2"
+                        Width="20" Height="20"
+                        Background="Red"
+                        CornerRadius="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding UnreadCount, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="{Binding UnreadCount}"
+                               Foreground="White"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+
+            <Button x:Name="AddButton" 
+                    Content="➕"
                     Width="30" Height="30"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Margin="10,10,10,10"
-                    Background="#409aff"
+                    Margin="10"
+                    Background="#FFE5E5E5"
                     Foreground="White"
                     FontSize="15"
                     BorderBrush="Transparent"
                     Cursor="Hand"
-                    Command="{Binding AddContactCommand}" />
+                    Click="AddButton_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="加好友/加群" Command="{Binding OpenAddContactWindowCommand}" />
+                        <MenuItem Header="创建群聊" Command="{Binding OpenCreateGroupWindowCommand}" />
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+
 
             <!-- 用户信息显示区 -->
             <StackPanel Grid.Row="2"
                         Orientation="Horizontal"
                         Background="#FFE2E2E2"
                         Margin="5,5,5,5">
-                            <Ellipse Width="30" Height="30"
+                <Ellipse Width="30" Height="30"
                                      Margin="15,0,0,0">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding CurrentUser.AvatarUrl}" Stretch="UniformToFill"/>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding CurrentUser.AvatarUrl}" Stretch="UniformToFill"/>
                     </Ellipse.Fill>
-                            </Ellipse>
+                </Ellipse>
 
                 <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
                     <Label Content="{Binding CurrentUser.Nickname}" 
@@ -137,7 +186,7 @@
             </Grid.RowDefinitions>
 
             <Border BorderBrush="#2F3136"
-                    BorderThickness="0,0,0,2" Grid.RowSpan="2">
+                    BorderThickness="0,0,0,0" Grid.RowSpan="2">
                 <Grid HorizontalAlignment="Stretch"
                       Margin="8">
 
@@ -163,29 +212,46 @@
                 </Grid>
             </Border>
 
-            <ListView ItemsSource="{Binding SelectedContact.Messages}"
+            <ListView x:Name="MessageListView"
+                      ItemsSource="{Binding SelectedContact.Messages}"
+                      ScrollViewer.ScrollChanged="MessagesListView_ScrollChanged"
                       Background="#FFE5E5E5"
                       BorderThickness="0"
                       ItemContainerStyle="{StaticResource ChatItem}"
-                      Margin="8,0,0,0"
+                      Margin="10,0,0,50"
                       Grid.Row="2"/>
+            <Button x:Name="NewMessageButton"
+                    Content="↓ 新消息"
+                    Visibility="Collapsed"
+                    Width="100" Height="30"
+                    Background="LightBlue"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    Grid.Row="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="0,465,0,0"
+                    Click="NewMessageButton_Click"/>
 
-            <Grid Grid.Row="3">
+
+            <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="617*"/>
+                    <ColumnDefinition Width="294*"/>
                     <ColumnDefinition Width="90"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Row="1"
+                <TextBox
                          Height="50"
                          Text="Message @Username"
                          Style="{StaticResource MessageBox}"
-                         Grid.ColumnSpan="2"/>
+                         Margin="10,0,0,10"
+                         Grid.ColumnSpan="3"/>
 
                 <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            Grid.Column="1"
-                            Margin="0,0,16,0">
+                            HorizontalAlignment="Left"
+                            Grid.Column="2"
+                            Margin="3,0,0,0">
 
                     <Image Source="/Icons/add.png"
                            Width="20" Height="20"

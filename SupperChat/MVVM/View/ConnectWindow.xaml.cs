@@ -23,5 +23,10 @@ namespace SupperChat.MVVM.View
 		{
 			InitializeComponent();
 		}
+
+		private void TextBox_TextChanged()
+		{
+
+		}
 	}
 }
