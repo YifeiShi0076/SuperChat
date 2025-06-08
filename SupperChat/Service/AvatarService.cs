@@ -11,7 +11,7 @@ namespace SupperChat.Services
 	{
 		public static string GenerateRandomAvatar(string nickname)
 		{
-			int size = 256; // 图片大小  
+			int size = 256;
 			var bmp = new Bitmap(size, size);
 
 			using (Graphics g = Graphics.FromImage(bmp))
@@ -29,7 +29,7 @@ namespace SupperChat.Services
 
 				string firstChar = string.IsNullOrEmpty(nickname) ? "?" : nickname.Trim()[0].ToString().ToUpper();
 
-				using (Font font = new Font(new FontFamily("Arial"), size / 2, System.Drawing.FontStyle.Bold, GraphicsUnit.Pixel)) // Fix CS1503 by using FontFamily  
+				using (Font font = new Font(new FontFamily("Arial"), size / 2, System.Drawing.FontStyle.Bold, GraphicsUnit.Pixel))
 				{
 					var textSize = g.MeasureString(firstChar, font);
 					var textPosition = new PointF(
@@ -44,13 +44,16 @@ namespace SupperChat.Services
 				}
 			}
 
-			string tempFolder = Path.Combine(Path.GetTempPath(), "SupperChatAvatars");
-			if (!Directory.Exists(tempFolder))
+			// 改到程序所在目录
+			string exeFolder = AppDomain.CurrentDomain.BaseDirectory;
+			string avatarFolder = Path.Combine(exeFolder, "Avatars");
+
+			if (!Directory.Exists(avatarFolder))
 			{
-				Directory.CreateDirectory(tempFolder);
+				Directory.CreateDirectory(avatarFolder);
 			}
 
-			string filePath = Path.Combine(tempFolder, Guid.NewGuid().ToString() + ".png");
+			string filePath = Path.Combine(avatarFolder, Guid.NewGuid().ToString() + ".png");
 
 			bmp.Save(filePath, ImageFormat.Png);
 			bmp.Dispose();

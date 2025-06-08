@@ -11,6 +11,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SupperChat.MVVM.Model;
 using SupperChat.MVVM.ViewModel;
+using SupperChat.Views;
 
 namespace SupperChat
 {
@@ -153,6 +154,11 @@ namespace SupperChat
 			{
 				MessageListView.ScrollIntoView(MessageListView.Items[MessageListView.Items.Count - 1]);
 			}
+		}
+		private void UserAvatar_Click(object sender, MouseButtonEventArgs e)
+		{
+			var userInfoWindow = new UserInfoWindow(_viewModel.CurrentUser); // 传递当前用户信息
+			userInfoWindow.ShowDialog(); // 模态打开
 		}
 
 	}

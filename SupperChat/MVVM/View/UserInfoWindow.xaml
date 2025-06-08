@@ -1,0 +1,64 @@
+﻿<Window x:Class="SupperChat.Views.UserInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="用户信息" Height="400" Width="300"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Ellipse Width="70" Height="70" Stroke="Gray" StrokeThickness="1"
+                 Margin="0,0,0,10">
+            <Ellipse.Fill>
+                <ImageBrush ImageSource="{Binding AvatarUrl}" Stretch="UniformToFill"/>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <!-- 用户名 -->
+        <TextBlock Grid.Row="1"
+                   Text="账号：" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" 
+                   Text="{Binding Username}" 
+                   Margin="50,0,0,0"/>
+
+        <!-- 昵称 -->
+        <TextBlock Grid.Row="2"
+                   Text="昵称：" FontWeight="Bold" Margin="0,10,0,0"/>
+        <TextBlock Grid.Row="2" 
+                   Text="{Binding Nickname}" 
+                   Margin="50,10,0,0"/>
+
+        <!-- 个性签名 -->
+        <TextBlock Grid.Row="3"
+                   Text="签名：" FontWeight="Bold" Margin="0,10,0,0"/>
+        <TextBlock Grid.Row="3" 
+                   Text="{Binding Signature}" 
+                   Margin="50,10,0,0"
+                   TextWrapping="Wrap" Width="200"/>
+
+        <!-- 编辑按钮 -->
+        <Button Grid.Row="4"
+                Content="编辑" Width="80" Height="30"
+                Margin="0,10,0,0"
+                HorizontalAlignment="Center"
+                IsEnabled="False"/>
+        <!-- 后期再实现 -->
+
+        <!-- 退出登录按钮 -->
+        <Button Grid.Row="5"
+                Content="退出登录" Width="100" Height="40"
+                Background="Red" Foreground="White"
+                FontWeight="Bold"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="0,20,0,0"
+                Click="LogoutButton_Click"/>
+    </Grid>
+</Window>
