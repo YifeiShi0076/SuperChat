@@ -1,7 +1,7 @@
 ﻿using StackExchange.Redis;
 using System;
 
-namespace SupperChat.Services
+namespace SupperChat.Service
 {
 	public class RedisService
 	{

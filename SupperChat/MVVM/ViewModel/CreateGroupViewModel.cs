@@ -1,6 +1,6 @@
 ﻿using SupperChat.Core;
 using SupperChat.MVVM.Model;
-using SupperChat.Services;
+using SupperChat.Service;
 using System.Windows;
 
 namespace SupperChat.MVVM.ViewModel

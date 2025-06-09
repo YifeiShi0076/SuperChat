@@ -4,7 +4,7 @@ using System.Windows.Input;
 using SupperChat.Core;
 using SupperChat.MVVM.Model;
 using SupperChat.Service;
-using SupperChat.Services;
+using SupperChat.Service;
 using Microsoft.Win32;
 
 namespace SupperChat.MVVM.ViewModel

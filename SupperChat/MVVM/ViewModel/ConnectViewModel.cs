@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using SupperChat.Core;
 using SupperChat.MVVM.View;
-using SupperChat.Services;
+using SupperChat.Service;
 
 namespace SupperChat.MVVM.ViewModel
 {
@@ -31,7 +31,13 @@ namespace SupperChat.MVVM.ViewModel
 
 		private void ConnectToRedis(object obj)
 		{
-			if (RedisService.Connect(Host, int.Parse(Port)))
+			if (!int.TryParse(Port, out int port))
+			{
+				MessageBox.Show("端口格式错误，请输入有效的端口号！");
+				return;
+			}
+
+			if (RedisService.Connect(Host, port))
 			{
 				MessageBox.Show("连接成功！");
 

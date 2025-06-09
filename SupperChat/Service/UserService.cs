@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 using SupperChat.MVVM.Model;
-using SupperChat.Services;
+using SupperChat.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,10 +39,10 @@ namespace SupperChat.Service
 
 			var hashEntries = new HashEntry[]
 			{
-		new HashEntry("Password", EncryptPassword(user.Password)),
-		new HashEntry("Nickname", user.Nickname ?? user.Username),
-		new HashEntry("AvatarUrl", user.AvatarUrl ?? ""),
-		new HashEntry("Signature", user.Signature ?? "这个人很懒，什么也没有留下。")
+				new HashEntry("Password", EncryptPassword(user.Password)),
+				new HashEntry("Nickname", user.Nickname ?? user.Username),
+				new HashEntry("AvatarUrl", user.AvatarUrl ?? ""),
+				new HashEntry("Signature", user.Signature ?? "这个人很懒，什么也没有留下。")
 			};
 
 			// 正确保存为 Hash 类型

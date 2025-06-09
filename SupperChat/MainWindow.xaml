@@ -161,7 +161,12 @@
                          Margin="15,0,0,0"
                          MouseLeftButtonUp="UserAvatar_Click">
                     <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding CurrentUser.AvatarUrl}" Stretch="UniformToFill"/>
+                        <ImageBrush Stretch="UniformToFill">
+                            <ImageBrush.ImageSource>
+                                <Binding Path="CurrentUser.AvatarUrl" FallbackValue="./Icons/questionMark.png" />
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                        
                     </Ellipse.Fill>
                 </Ellipse>
 

@@ -26,13 +26,17 @@
 
                             <Ellipse Width="30" Height="30">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding ImageSource}" Stretch="Uniform" />
+                                    <ImageBrush Stretch="Uniform">
+                                        <ImageBrush.ImageSource>
+                                            <Binding Path="ImageSource" FallbackValue="/Icons/questionMark.png" />
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
 
 
                             <StackPanel>
-                                <Label Content="{Binding Username}"
+                                <Label Content="{Binding Contactname}"
                                        Foreground="Black"/>
                                 <Label Content="{Binding LastMessage}"
                                        Foreground="Gray"

@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 
-namespace SupperChat.Services
+namespace SupperChat.Service
 {
 	public static class AvatarService
 	{

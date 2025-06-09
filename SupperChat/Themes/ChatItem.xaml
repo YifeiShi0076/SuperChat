@@ -8,8 +8,12 @@
                         <Ellipse Width="30" Height="30"
                                  Margin="10,0,0,-5">
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImageSource}"
-                                            RenderOptions.BitmapScalingMode="Fant"/>
+                                <ImageBrush RenderOptions.BitmapScalingMode="Fant">
+                                    <ImageBrush.ImageSource>
+                                        <Binding Path="ImageSource" FallbackValue="/Icons/questionMark.png" />
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                                
                             </Ellipse.Fill>
                         </Ellipse>
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SupperChat.Services
+namespace SupperChat.Service
 {
     public static class ChatService
     {
@@ -242,10 +242,18 @@ namespace SupperChat.Services
 		}
 
 		// 添加好友
-		public static async Task AddFriendAsync(string username, string friendUsername)
+		public static async Task<bool> AddFriendAsync(string username, string friendUsername)
 		{
-			await db.SetAddAsync($"friends:{username}", friendUsername);
+			var tasks = new List<Task>
+	{
+				db.SetAddAsync($"friends:{username}", friendUsername),
+				db.SetAddAsync($"friends:{friendUsername}", username)
+	};
+
+			await Task.WhenAll(tasks);
+			return true;
 		}
+
 
 		// 添加群聊
 		public static async Task AddGroupAsync(string username, string groupName)
@@ -324,6 +332,8 @@ namespace SupperChat.Services
 			// 插到最前面
 			await db.ListLeftPushAsync($"sessions:{username}", target);
 		}
+
+
 
 	}
 }

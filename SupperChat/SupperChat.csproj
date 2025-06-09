@@ -14,6 +14,7 @@
     <None Remove="Icons\add.png" />
     <None Remove="Icons\camera.png" />
     <None Remove="Icons\phone.png" />
+    <None Remove="Icons\questionMark.png" />
     <None Remove="Icons\send.png" />
     <None Remove="Icons\TestPicture.png" />
   </ItemGroup>
@@ -32,6 +33,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icons\phone.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\questionMark.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icons\send.png">

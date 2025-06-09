@@ -1,17 +1,15 @@
 ﻿using SupperChat.Core;
 using SupperChat.MVVM.Model;
-using SupperChat.Services;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using StackExchange.Redis;
-using SupperChat.MVVM.View;
 using SupperChat.Service;
+using System.Collections.ObjectModel;
+using SupperChat.MVVM.View;
 
 namespace SupperChat.MVVM.ViewModel
 {
 	public class MainViewModel : ObservableObject
 	{
 		private readonly UserModel _currentUser;
+		public UserModel CurrentUser => _currentUser;
 
 		public ObservableCollection<ContactModel> Contacts { get; set; }
 		public RelayCommand SendCommand { get; set; }
@@ -83,14 +81,15 @@ namespace SupperChat.MVVM.ViewModel
 
 		public bool AddFriend(UserModel user)
 		{
-			bool exists = Contacts.Any(c => c.Username == user.Username);
+			bool exists = Contacts.Any(c => c.Contactname == user.Username);
 			if (exists)
 				return false;
 
 			var contact = new ContactModel
 			{
-				Username = user.Username,
+				Contactname = user.Nickname,
 				ImageSource = user.AvatarUrl,
+				// Nickname = user.Nickname,
 				Messages = new ObservableCollection<MessageModel>(),
 				IsGroup = false
 			};
@@ -101,18 +100,15 @@ namespace SupperChat.MVVM.ViewModel
 
 			return true;
 		}
-
-
-
 		public bool AddGroup(GroupModel group)
 		{
-			bool exists = Contacts.Any(c => c.Username == group.GroupName);
+			bool exists = Contacts.Any(c => c.Contactname == group.GroupName);
 			if (exists)
 				return false;
 
 			var contact = new ContactModel
 			{
-				Username = group.GroupName,
+				Contactname = group.GroupName,
 				ImageSource = group.AvatarUrl,
 				Messages = new ObservableCollection<MessageModel>(),
 				IsGroup = true
@@ -129,7 +125,7 @@ namespace SupperChat.MVVM.ViewModel
 				if (message.SenderUsername == _currentUser.Username)
 					return;
 
-				var targetContact = Contacts.FirstOrDefault(c => c.Username == group.GroupName);
+				var targetContact = Contacts.FirstOrDefault(c => c.Contactname == group.GroupName);
 				if (targetContact != null)
 				{
 					targetContact.Messages.Add(message);
@@ -165,14 +161,14 @@ namespace SupperChat.MVVM.ViewModel
 			if (SelectedContact != null)
 			{
 				Messages.Clear();
-				var chatHistory = await ChatService.GetChatHistory(_currentUser.Username, SelectedContact.Username);
+				var chatHistory = await ChatService.GetChatHistory(_currentUser.Username, SelectedContact.Contactname);
 				foreach (var msg in chatHistory)
 				{
 					Messages.Add(msg);
 				}
 
 				// 开始订阅该联系人的频道
-				ChatService.SubscribeToChannel(SelectedContact.Username, OnMessageReceived);
+				ChatService.SubscribeToChannel(SelectedContact.Contactname, OnMessageReceived);
 			}
 		}
 
@@ -199,17 +195,17 @@ namespace SupperChat.MVVM.ViewModel
 			// 简单判断：如果是群聊，发群消息，否则单聊
 			if (SelectedContact.IsGroup)
 			{
-				await ChatService.SendGroupMessageAsync(SelectedContact.Username, newMessage);
+				await ChatService.SendGroupMessageAsync(SelectedContact.Contactname, newMessage);
 			}
 			else
 			{
-				await ChatService.SendPrivateMessageAsync(_currentUser.Username, SelectedContact.Username, newMessage);
+				await ChatService.SendPrivateMessageAsync(_currentUser.Username, SelectedContact.Contactname, newMessage);
 			}
 
 
 			SelectedContact.Messages.Add(newMessage);
 			Message = string.Empty;
-			await ChatService.AddSessionAsync(_currentUser.Username, SelectedContact.Username);
+			await ChatService.AddSessionAsync(_currentUser.Username, SelectedContact.Contactname);
 
 		}
 
@@ -227,11 +223,11 @@ namespace SupperChat.MVVM.ViewModel
 
 			if (contact.IsGroup)
 			{
-				history = await ChatService.GetGroupHistoryPageAsync(contact.Username, contact.CurrentPage, contact.PageSize);
+				history = await ChatService.GetGroupHistoryPageAsync(contact.Contactname, contact.CurrentPage, contact.PageSize);
 			}
 			else
 			{
-				history = await ChatService.GetPrivateHistoryPageAsync(_currentUser.Username, contact.Username, contact.CurrentPage, contact.PageSize);
+				history = await ChatService.GetPrivateHistoryPageAsync(_currentUser.Username, contact.Contactname, contact.CurrentPage, contact.PageSize);
 			}
 
 			if (history.Count == 0)
@@ -281,6 +277,29 @@ namespace SupperChat.MVVM.ViewModel
 			// 这里可以弹窗输入新联系人名字，或者新建群聊
 		}
 
-		public UserModel CurrentUser => _currentUser;
+		public async Task LoadFriendsAsync()
+		{
+			var friends = await ChatService.GetFriendsAsync(CurrentUser.Username);
+
+			foreach (var friendUsername in friends)
+			{
+				var userInfo = await ChatService.SearchUserAsync(friendUsername);
+				if (userInfo != null)
+				{
+					Contacts.Add(new ContactModel
+					{
+						Contactname = userInfo.Username,
+						Nickname = userInfo.Nickname,
+						ImageSource = userInfo.AvatarUrl,
+						Signature = userInfo.Signature,
+						Messages = new ObservableCollection<MessageModel>(),
+						IsGroup = false
+					});
+				}
+			}
+		}
+
+
+		
 	}
 }
