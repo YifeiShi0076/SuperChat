@@ -18,21 +18,12 @@
             <StackPanel >
                 <Grid>
                     <TextBox Height="30" Margin="10" Width="250" HorizontalAlignment="Left"/>
-                    <Button x:Name="AddButton" 
+                    <Button
         Content="➕"
         Width="30" Height="30"
         Background="#FFE5E5E5"
         Foreground="White"
-        FontSize="15"
-        BorderBrush="Transparent"
-        Cursor="Hand"
-        Click="AddButton_Click" RenderTransformOrigin="0.493,0.592" Margin="277,10,10,10">
-                        <Button.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="加好友/加群" Command="{Binding OpenAddContactWindowCommand}" />
-                                <MenuItem Header="创建群聊" Command="{Binding OpenCreateGroupWindowCommand}" />
-                            </ContextMenu>
-                        </Button.ContextMenu>
+        FontSize="15" Margin="277,10,10,10">
                     </Button>
                 </Grid>
                 <ListBox Height="735">
