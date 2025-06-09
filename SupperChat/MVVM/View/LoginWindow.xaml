@@ -6,16 +6,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SupperChat.MVVM.View" xmlns:viewmodel="clr-namespace:SupperChat.MVVM.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:LoginViewModel}"
         mc:Ignorable="d"
-        Title="用户注册/登录" Height="600" Width="300"
+        Title="用户注册/登录" 
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Border Background="#B0CCE1" 
                 CornerRadius="10" 
-                Padding="20" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Center"
                 Width="300" Cursor="">
-            <StackPanel>
+            <StackPanel Margin="10">
                 <!-- 标题 -->
                 <TextBlock Text="{Binding TitleText}" 
                            FontSize="24" 
