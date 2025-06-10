@@ -23,7 +23,7 @@
                            Margin="0,0,0,20"/>
                 
                 <!-- 用户名 -->
-                <TextBlock Text="用户名" FontWeight="SemiBold" />
+                <TextBlock Text="账号" FontWeight="SemiBold" />
                 <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
                          Margin="0,5,0,15" 
                          Height="30"

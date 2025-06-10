@@ -30,7 +30,7 @@
 
 
         <Border Grid.ColumnSpan="3"
-              Background="White"
+              Background="#FFE5E5E5"
               MouseDown="Border_MouseDown">
 
             <Grid HorizontalAlignment="Stretch">
@@ -85,12 +85,12 @@
                   Margin="20,0,0,0" Background="White"/>
 
             <ListView ItemsSource="{Binding Contacts}"
-          SelectedItem="{Binding SelectedContact}"
-          Background="White"
-          BorderThickness="0"
-          Grid.Row="1"
-          ItemContainerStyle="{StaticResource ContactCard}"
-          SelectionChanged="ListView_SelectionChanged">
+                      SelectedItem="{Binding SelectedContact}"
+                      Background="White"
+                      BorderThickness="0"
+                      Grid.Row="1"
+                      ItemContainerStyle="{StaticResource ContactCard}"
+                      SelectionChanged="ListView_SelectionChanged">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -112,17 +112,17 @@
 
                             <!-- 小红点 -->
                             <Border Grid.Column="2"
-                        Width="20" Height="20"
-                        Background="Red"
-                        CornerRadius="10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Visibility="{Binding UnreadCount, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    Width="20" Height="20"
+                                    Background="Red"
+                                    CornerRadius="10"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding UnreadCount, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <TextBlock Text="{Binding UnreadCount}"
-                               Foreground="White"
-                               FontSize="12"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                                           Foreground="White"
+                                           FontSize="12"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
                     </DataTemplate>
@@ -166,7 +166,7 @@
                                 <Binding Path="CurrentUser.AvatarUrl" FallbackValue="./Icons/questionMark.png" />
                             </ImageBrush.ImageSource>
                         </ImageBrush>
-                        
+
                     </Ellipse.Fill>
                 </Ellipse>
 
@@ -185,6 +185,10 @@
 
         <Grid Grid.Column="2"
               Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="77*"/>
+                <ColumnDefinition Width="136*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30.333"/>
                 <RowDefinition Height="19.667"/>
@@ -193,7 +197,7 @@
             </Grid.RowDefinitions>
 
             <Border BorderBrush="#2F3136"
-                    BorderThickness="0,0,0,0" Grid.RowSpan="2">
+                    BorderThickness="0,0,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2">
                 <Grid HorizontalAlignment="Stretch"
                       Margin="8">
 
@@ -226,7 +230,7 @@
                       BorderThickness="0"
                       ItemContainerStyle="{StaticResource ChatItem}"
                       Margin="10,0,0,50"
-                      Grid.Row="2"/>
+                      Grid.Row="2" Grid.ColumnSpan="2"/>
             <Button x:Name="NewMessageButton"
                     Content="↓ 新消息"
                     Visibility="Collapsed"
@@ -235,13 +239,13 @@
                     Foreground="White"
                     FontWeight="Bold"
                     Grid.Row="2"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="0,465,0,0"
-                    Click="NewMessageButton_Click"/>
+                    Margin="39,465,0,0"
+                    Click="NewMessageButton_Click" Grid.Column="1" Grid.RowSpan="2"/>
 
 
-            <Grid Grid.Row="4">
+            <Grid Grid.Row="3" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="617*"/>
                     <ColumnDefinition Width="294*"/>
