@@ -64,7 +64,7 @@ namespace SupperChat.MVVM.ViewModel
 			if (success)
 			{
 				// 订阅私聊频道
-				// SubscribeToPrivateChannel(CurrentUser.Username, targetUsername);
+				SubscribeToPrivateChannel(CurrentUser.Username, targetUsername);
 
 				// 通知主视图模型添加联系人
 				OnFriendFound?.Invoke(user);

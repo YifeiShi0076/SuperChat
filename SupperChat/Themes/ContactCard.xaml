@@ -28,7 +28,7 @@
                                 <Ellipse.Fill>
                                     <ImageBrush Stretch="Uniform">
                                         <ImageBrush.ImageSource>
-                                            <Binding Path="ImageSource" FallbackValue="./Icons/questionMark.png" />
+                                            <Binding Path="ImageSource" FallbackValue="/Icons/questionMark.png" />
                                         </ImageBrush.ImageSource>
                                     </ImageBrush>
                                 </Ellipse.Fill>
