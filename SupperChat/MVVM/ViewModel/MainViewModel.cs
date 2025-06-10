@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using SupperChat.MVVM.View;
 using StackExchange.Redis;
 using System.Windows;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace SupperChat.MVVM.ViewModel
@@ -110,6 +111,9 @@ namespace SupperChat.MVVM.ViewModel
 			// 添加订阅逻辑
 			SubscribeToPrivateChannel(_currentUser.Username, user.Username);
 
+			// 初始化消息分组标记
+			UpdateMessageFirstFlags(contact);
+
 			return true;
 		}
 
@@ -135,6 +139,9 @@ namespace SupperChat.MVVM.ViewModel
 			{
 				var msg = JsonConvert.DeserializeObject<MessageModel>(message);
 
+				if (msg.SenderUsername == _currentUser.Username)
+					return;                 // 自己的消息不再处理
+
 				var contact = Contacts.FirstOrDefault(c => c.Contactname == senderUsername);
 				if (contact == null)
 				{
@@ -146,7 +153,7 @@ namespace SupperChat.MVVM.ViewModel
 						Messages = new ObservableCollection<MessageModel>(),
 						IsGroup = false
 					};
-					Contacts.Add(contact);
+					AppendMessage(contact, msg);
 				}
 
 				contact.Messages.Add(msg);
@@ -183,7 +190,7 @@ namespace SupperChat.MVVM.ViewModel
 				var targetContact = Contacts.FirstOrDefault(c => c.Contactname == group.GroupName);
 				if (targetContact != null)
 				{
-					targetContact.Messages.Add(message);
+					AppendMessage(targetContact, message);
 
 					if (SelectedContact != targetContact)  // 不是当前打开的聊天窗口
 					{
@@ -222,54 +229,34 @@ namespace SupperChat.MVVM.ViewModel
 				var userInfo = await ChatService.SearchUserAsync(friendUsername);
 				if (userInfo != null)
 				{
-					Contacts.Add(new ContactModel
-					{
-						Contactname = userInfo.Username,
-						Nickname = userInfo.Nickname,
-						ImageSource = userInfo.AvatarUrl,
-						Messages = new ObservableCollection<MessageModel>(),
-						IsGroup = false
-					});
+					AddFriend(userInfo);
 				}
 			}
 		}
 		private async void LoadMessagesForSelectedContact()
 		{
-			if (SelectedContact != null)
+			if (SelectedContact != null && SelectedContact.Messages.Count == 0)
 			{
-				Messages.Clear();
-				List<MessageModel> history;
-
-				if (SelectedContact.IsGroup)
-				{
-					history = await ChatService.GetGroupHistoryPageAsync(
-							SelectedContact.Contactname,
-							SelectedContact.CurrentPage,
-							SelectedContact.PageSize);
-				}
-				else
-				{
-					history = await ChatService.GetPrivateHistoryPageAsync(
-							_currentUser.Username,
-							SelectedContact.Contactname,
-							SelectedContact.CurrentPage,
-							SelectedContact.PageSize);
-				}
-
-				foreach (var msg in history)
-				{
-					Messages.Add(msg);
-				}
-
-				// 开始订阅该联系人的频道
-				ChatService.SubscribeToChannel(SelectedContact.Contactname, OnMessageReceived);
+				await LoadMoreMessagesAsync(SelectedContact);
 			}
 		}
 
 		private void OnMessageReceived(MessageModel message)
 		{
-			App.Current.Dispatcher.Invoke(() => Messages.Add(message));
+			message.IsNativeOrigin = message.SenderUsername == _currentUser.Username;
+
+			var contact = Contacts.FirstOrDefault(c => c.Contactname == message.SenderUsername || (c.IsGroup && c.Contactname == SelectedContact?.Contactname));
+			if (contact != null)
+			{
+				App.Current.Dispatcher.Invoke(() => AppendMessage(contact, message));
+
+				if (SelectedContact != contact)
+				{
+					contact.UnreadCount++;
+				}
+			}
 		}
+
 
 		private async Task SendMessage()
 		{
@@ -297,7 +284,7 @@ namespace SupperChat.MVVM.ViewModel
 			}
 
 
-			SelectedContact.Messages.Add(newMessage);
+			AppendMessage(SelectedContact, newMessage);
 			Message = string.Empty;
 			await ChatService.AddSessionAsync(_currentUser.Username, SelectedContact.Contactname);
 
@@ -337,8 +324,9 @@ namespace SupperChat.MVVM.ViewModel
 			}
 
 			contact.CurrentPage++;
+			UpdateMessageFirstFlags(contact);
 		}
-
+	
 		public async Task LoadSessionsAsync()
 		{
 			Contacts.Clear();
@@ -380,20 +368,32 @@ namespace SupperChat.MVVM.ViewModel
 				var userInfo = await ChatService.SearchUserAsync(friendUsername);
 				if (userInfo != null)
 				{
-					Contacts.Add(new ContactModel
-					{
-						Contactname = userInfo.Username,
-						Nickname = userInfo.Nickname,
-						ImageSource = userInfo.AvatarUrl,
-						Signature = userInfo.Signature,
-						Messages = new ObservableCollection<MessageModel>(),
-						IsGroup = false
-					});
+					AddFriend(userInfo);
 				}
 			}
 		}
 
+		private void UpdateMessageFirstFlags(ContactModel contact)
+		{
+			MessageModel prev = null;
+			foreach (var msg in contact.Messages)
+			{
+				if (prev == null || prev.SenderUsername != msg.SenderUsername)
+					msg.FirstMessage = true;
+				else
+					msg.FirstMessage = false;
+				prev = msg;
+			}
+		}
 
-		
+		private void AppendMessage(ContactModel contact, MessageModel message)
+		{
+			contact.Messages.Add(message);
+			UpdateMessageFirstFlags(contact);
+		}
+
+
+
+
 	}
 }
