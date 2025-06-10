@@ -15,16 +15,16 @@ using SupperChat.Views;
 
 namespace SupperChat
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
-	{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
 		private readonly MainViewModel _viewModel;
 		private bool _isAtBottom = true;
 
 		public MainWindow(UserModel userInfo)
-		{
+        {
 			InitializeComponent();
 			_viewModel = new MainViewModel(userInfo);
 			this.DataContext = _viewModel;
@@ -39,8 +39,8 @@ namespace SupperChat
 
 		private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			if (e.LeftButton == MouseButtonState.Pressed)
-				DragMove();
+            if(e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
 
 		}
 
@@ -51,7 +51,7 @@ namespace SupperChat
 
 		private void ButtonMaximize_Click(object sender, RoutedEventArgs e)
 		{
-			if (Application.Current.MainWindow.WindowState == WindowState.Maximized)
+			if(Application.Current.MainWindow.WindowState == WindowState.Maximized)
 			{
 				Application.Current.MainWindow.WindowState = WindowState.Normal;
 			}
@@ -88,7 +88,7 @@ namespace SupperChat
 				}
 			}
 
-			// ✅ 2.底部检测 — 是否在聊天底部
+			 // ✅ 2.底部检测 — 是否在聊天底部
 			if (e.ExtentHeight - e.ViewportHeight - e.VerticalOffset < 10)
 			{
 				// 已经在底部

@@ -6,46 +6,46 @@ using System.Threading.Tasks;
 
 namespace SupperChat.Service
 {
-	public static class ChatService
-	{
-		private static readonly IDatabase db = RedisService.Database;
-		private static readonly ISubscriber subscriber = RedisService.Subscriber;
+    public static class ChatService
+    {
+        private static readonly IDatabase db = RedisService.Database;
+        private static readonly ISubscriber subscriber = RedisService.Subscriber;
 
-		public static async Task SendMessageAsync(string target, MessageModel message)
-		{
-			string json = JsonSerializer.Serialize(message);
-			await subscriber.PublishAsync($"chat:{target}", json);
+        public static async Task SendMessageAsync(string target, MessageModel message)
+        {
+            string json = JsonSerializer.Serialize(message);
+            await subscriber.PublishAsync($"chat:{target}", json);
 
-			// 存聊天记录到Redis List
-			await db.ListRightPushAsync($"history:{target}", json);
-		}
+            // 存聊天记录到Redis List
+            await db.ListRightPushAsync($"history:{target}", json);
+        }
 
-		public static async Task<List<MessageModel>> GetChatHistory(string user, string target)
-		{
-			var messages = new List<MessageModel>();
-			var redisMessages = await db.ListRangeAsync($"history:{target}");
-			foreach (var redisMessage in redisMessages)
-			{
-				var msg = JsonSerializer.Deserialize<MessageModel>(redisMessage);
-				if (msg != null)
-				{
-					messages.Add(msg);
-				}
-			}
-			return messages;
-		}
+        public static async Task<List<MessageModel>> GetChatHistory(string user, string target)
+        {
+            var messages = new List<MessageModel>();
+            var redisMessages = await db.ListRangeAsync($"history:{target}");
+            foreach (var redisMessage in redisMessages)
+            {
+                var msg = JsonSerializer.Deserialize<MessageModel>(redisMessage);
+                if (msg != null)
+                {
+                    messages.Add(msg);
+                }
+            }
+            return messages;
+        }
 
-		public static void SubscribeToChannel(string channel, Action<MessageModel> messageReceivedCallback)
-		{
-			subscriber.Subscribe($"chat:{channel}", (ch, message) =>
-			{
-				var msg = JsonSerializer.Deserialize<MessageModel>(message);
-				if (msg != null)
-				{
-					messageReceivedCallback(msg);
-				}
-			});
-		}
+        public static void SubscribeToChannel(string channel, Action<MessageModel> messageReceivedCallback)
+        {
+            subscriber.Subscribe($"chat:{channel}", (ch, message) =>
+            {
+                var msg = JsonSerializer.Deserialize<MessageModel>(message);
+                if (msg != null)
+                {
+                    messageReceivedCallback(msg);
+                }
+            });
+        }
 
 		public static async Task<List<ContactModel>> GetContactsAsync(string username)
 		{
