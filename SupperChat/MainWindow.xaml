@@ -260,23 +260,16 @@
                             Grid.Column="2"
                             Margin="3,0,0,0">
 
-                    <!--<Image Source="/Icons/add.png"
+                    <Image Source="/Icons/add.png"
                            Width="20" Height="20"
                            RenderOptions.BitmapScalingMode="Fant"
-                           Margin="5,5,5,0"/>-->
+                           Margin="5,5,5,0"/>
 
 
-                    <Button Width="30" Height="30"
-                            Command="{Binding SendCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            ToolTip="发送消息"
-                            Margin="5,-10,0,0"
-                            Cursor="Hand">
-                        <Image Source="/Icons/send.png"
-                               Width="20" Height="20"
-                               RenderOptions.BitmapScalingMode="Fant"/>
-                    </Button>
+                    <Image Source="/Icons/send.png"
+                           Width="20" Height="20"
+                           RenderOptions.BitmapScalingMode="Fant"
+                           Margin="5,5,16,0"/>
                 </StackPanel>
 
             </Grid>
