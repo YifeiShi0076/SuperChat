@@ -36,6 +36,7 @@ namespace SupperChat.MVVM.ViewModel
 					if (_selectedContact != null)
 					{
 						_selectedContact.UnreadCount = 0; // 选中后未读清零
+						LoadMessagesForSelectedContact();
 					}
 				}
 			}
@@ -95,9 +96,9 @@ namespace SupperChat.MVVM.ViewModel
 
 			var contact = new ContactModel
 			{
-				Contactname = user.Nickname,
+				Contactname = user.Username,
+				Nickname = user.Nickname,
 				ImageSource = user.AvatarUrl,
-				// Nickname = user.Nickname,
 				Messages = new ObservableCollection<MessageModel>(),
 				IsGroup = false
 			};
@@ -232,15 +233,30 @@ namespace SupperChat.MVVM.ViewModel
 				}
 			}
 		}
-
-
 		private async void LoadMessagesForSelectedContact()
 		{
 			if (SelectedContact != null)
 			{
 				Messages.Clear();
-				var chatHistory = await ChatService.GetChatHistory(_currentUser.Username, SelectedContact.Contactname);
-				foreach (var msg in chatHistory)
+				List<MessageModel> history;
+
+				if (SelectedContact.IsGroup)
+				{
+					history = await ChatService.GetGroupHistoryPageAsync(
+							SelectedContact.Contactname,
+							SelectedContact.CurrentPage,
+							SelectedContact.PageSize);
+				}
+				else
+				{
+					history = await ChatService.GetPrivateHistoryPageAsync(
+							_currentUser.Username,
+							SelectedContact.Contactname,
+							SelectedContact.CurrentPage,
+							SelectedContact.PageSize);
+				}
+
+				foreach (var msg in history)
 				{
 					Messages.Add(msg);
 				}

@@ -245,6 +245,7 @@ namespace SupperChat.Service
 			var key = GetPrivateHistoryKey(fromUser, toUser);
 
 			await db.ListRightPushAsync(key, json);
+			await subscriber.PublishAsync($"chat:{fromUser}_{toUser}", json);
 		}
 
 		// 添加好友
