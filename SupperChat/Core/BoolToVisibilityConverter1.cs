@@ -5,16 +5,18 @@ using System.Windows.Data;
 
 namespace SupperChat.Core  
 {
-	public class BoolToVisibilityConverter : IValueConverter
+	public class BoolToVisibilityConverter1 : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			return (bool)value ? Visibility.Visible : Visibility.Collapsed;
+			bool flag = (bool)value;
+			if (parameter?.ToString()?.ToLower() == "false")
+				flag = !flag;
+
+			return flag ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return (Visibility)value == Visibility.Visible;
-		}
+			=> throw new NotImplementedException();
 	}
 }
