@@ -271,6 +271,7 @@ namespace SupperChat.MVVM.ViewModel
 
 		private void OnMessageReceived(MessageModel message)
 		{
+			message.IsNativeOrigin = message.SenderUsername == _currentUser.Username;
 			App.Current.Dispatcher.Invoke(() => Messages.Add(message));
 		}
 
@@ -336,7 +337,9 @@ namespace SupperChat.MVVM.ViewModel
 			// 插入到聊天记录最前面
 			for (int i = history.Count - 1; i >= 0; i--)
 			{
-				contact.Messages.Insert(0, history[i]);
+				var msg = history[i];
+				msg.IsNativeOrigin = msg.SenderUsername == _currentUser.Username;
+				contact.Messages.Insert(0, msg);
 			}
 
 			contact.CurrentPage++;

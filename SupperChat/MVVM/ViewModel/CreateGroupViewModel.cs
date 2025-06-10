@@ -39,7 +39,7 @@ namespace SupperChat.MVVM.ViewModel
 				_mainViewModel.AddGroup(new GroupModel
 				{
 					GroupName = GroupName.Trim(),
-					AvatarUrl = "/Icons/group_default.png" // 可以自定义默认群头像
+					AvatarUrl = "./Icons/group_default.png" // 默认群头像
 				});
 			}
 			else

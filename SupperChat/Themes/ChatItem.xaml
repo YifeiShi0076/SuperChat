@@ -3,21 +3,20 @@
     <Style TargetType="ListViewItem" x:Key="ChatItem">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ListViewItem">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="30" Height="30"
-                                 Margin="10,0,0,-5">
+                <ControlTemplate TargetType="ListViewItem" x:Name="OtherTemplate">
+                    <StackPanel Orientation="Horizontal" x:Name="RootPanel">
+                        <Ellipse Width="30" Height="30" Margin="10,0,0,-5" x:Name="Avatar">
                             <Ellipse.Fill>
                                 <ImageBrush RenderOptions.BitmapScalingMode="Fant">
                                     <ImageBrush.ImageSource>
-                                        <Binding Path="ImageSource" FallbackValue="/Icons/questionMark.png" />
+                                        <Binding Path="ImageSource" FallbackValue="./Icons/questionMark.png" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                                 
                             </Ellipse.Fill>
                         </Ellipse>
 
-                        <StackPanel>
+                        <StackPanel x:Name="ContentPanel">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="{Binding Username}"
                                         Foreground="#708090"
@@ -26,10 +25,10 @@
                                         Margin="0,0,-5,0"/>
 
                                 <Label Content="{Binding Time}"
-                                        Foreground="#708090"
-                                        FontSize="8"
-                                        FontWeight="SemiBold"
-                                        VerticalAlignment="Center"/>
+                                       Foreground="#708090"
+                                       FontSize="8"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <Label Content="{Binding Message}"
@@ -38,10 +37,6 @@
                                     VerticalAlignment="Center"/>
                         </StackPanel>
 
-
-
-
-
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
@@ -49,17 +44,69 @@
 
         <Style.Resources>
             <ControlTemplate x:Key="CustomRow">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" x:Name="RowPanel">
                     <Label Content="{Binding Message}"
                            Foreground="Black"
                            Margin="40,-2,0,-2"/>
                 </StackPanel>
             </ControlTemplate>
+            <ControlTemplate x:Key="SelfTemplate" TargetType="ListViewItem">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="RightToLeft" x:Name="SelfRoot">
+                    <Ellipse Width="30" Height="30" Margin="10,0,0,-5">
+                        <Ellipse.Fill>
+                            <ImageBrush RenderOptions.BitmapScalingMode="Fant">
+                                <ImageBrush.ImageSource>
+                                    <Binding Path="ImageSource" FallbackValue="/Icons/questionMark.png" />
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <StackPanel FlowDirection="LeftToRight">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{Binding Username}"
+                                   Foreground="#708090"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,-5,0"/>
+                            <Label Content="{Binding Time}"
+                                   Foreground="#708090"
+                                   FontSize="8"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Label Content="{Binding Message}"
+                               Foreground="Black"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </ControlTemplate>
+            <ControlTemplate x:Key="SelfRowTemplate" TargetType="ListViewItem">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="RightToLeft" x:Name="SelfRowPanel">
+                    <Label Content="{Binding Message}"
+                           Foreground="Black"
+                           Margin="40,-2,0,-2" FlowDirection="LeftToRight"/>
+                </StackPanel>
+            </ControlTemplate>
         </Style.Resources>
 
         <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsNativeOrigin}" Value="True" />
+                    <Condition Binding="{Binding FirstMessage}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Template" Value="{StaticResource SelfTemplate}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsNativeOrigin}" Value="True" />
+                    <Condition Binding="{Binding FirstMessage}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Template" Value="{StaticResource SelfRowTemplate}" />
+            </MultiDataTrigger>
             <DataTrigger Binding="{Binding FirstMessage}" Value="False">
-                <Setter Property="Template" Value="{StaticResource CustomRow}"/>
+                <Setter Property="Template" Value="{StaticResource CustomRow}" />
             </DataTrigger>
         </Style.Triggers>
         
