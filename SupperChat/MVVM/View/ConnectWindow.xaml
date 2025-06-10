@@ -64,8 +64,14 @@
 
                 <!-- 连接按钮 -->
                 <Button Content="连接"
-                        Width="100"
+                        Width="80"
                         HorizontalAlignment="Center"
+                        Height="40"
+                        Background="#EAD6EE"
+                        Foreground="Black"
+                        FontSize="16"
+                        BorderThickness="0"
+                        Cursor="Hand"
                         Command="{Binding ConnectCommand}"/>
             </StackPanel>
         </Border>

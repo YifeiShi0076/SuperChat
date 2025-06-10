@@ -26,7 +26,8 @@
                             </Ellipse>
 
                             <StackPanel>
-                                <TextBlock Text="{Binding SenderUsername}" FontSize="10" Foreground="Gray"/>
+                                <TextBlock Text="{Binding SenderUsername}" FontSize="10" Foreground="Black"/>
+                                <TextBlock Text="{Binding Time}" FontSize="8" Foreground="Gray"/>
                                 <Border Background="#EFEFEF" Padding="8" CornerRadius="10" Margin="2">
                                     <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
                                 </Border>
@@ -39,7 +40,8 @@
                                     HorizontalAlignment="Right"
                                     Visibility="{Binding IsSelf, Converter={StaticResource BoolToVisibilityConverter1}}">
                             <StackPanel>
-                                <TextBlock Text="{Binding SenderUsername}" FontSize="10" Foreground="Gray" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding SenderUsername}" FontSize="10" Foreground="Black" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Time}" FontSize="8" Foreground="Gray"/>
                                 <Border Background="#409aff" Padding="8" CornerRadius="10" Margin="2">
                                     <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="White"/>
                                 </Border>
