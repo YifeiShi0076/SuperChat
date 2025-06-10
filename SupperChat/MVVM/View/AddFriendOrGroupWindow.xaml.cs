@@ -9,7 +9,8 @@ namespace SupperChat.MVVM.View
 		public AddFriendOrGroupWindow(UserModel currentUser, MainViewModel mainViewModel)
 		{
 			InitializeComponent();
-			var vm = new AddFriendOrGroupViewModel();
+
+			var vm = new AddFriendOrGroupViewModel(currentUser, mainViewModel);
 			this.DataContext = vm;
 
 			vm.OnFriendFound = user =>

@@ -3,13 +3,20 @@ using SupperChat.MVVM.Model;
 using SupperChat.Service;
 using System.Collections.ObjectModel;
 using SupperChat.MVVM.View;
+using StackExchange.Redis;
+using System.Windows;
+using Newtonsoft.Json;
 
 namespace SupperChat.MVVM.ViewModel
 {
 	public class MainViewModel : ObservableObject
 	{
-		private readonly UserModel _currentUser;
-		public UserModel CurrentUser => _currentUser;
+		private UserModel _currentUser;
+		public UserModel CurrentUser
+		{
+			get => _currentUser;
+			set { _currentUser = value; OnPropertyChanged(); }
+		}
 
 		public ObservableCollection<ContactModel> Contacts { get; set; }
 		public RelayCommand SendCommand { get; set; }
@@ -64,7 +71,8 @@ namespace SupperChat.MVVM.ViewModel
 			OpenAddContactWindowCommand = new RelayCommand(o => OpenAddContactWindow()); // 打开添加联系人窗口
 			OpenCreateGroupWindowCommand = new RelayCommand(o => OpenCreateGroupWindow()); // 打开创建群聊窗口
 
-			LoadContacts();
+			LoadFriends();
+			// LoadContacts();
 		}
 
 		private void OpenCreateGroupWindow()
@@ -98,8 +106,54 @@ namespace SupperChat.MVVM.ViewModel
 
 			LoadPrivateHistoryAsync(contact);
 
+			// 添加订阅逻辑
+			SubscribeToPrivateChannel(_currentUser.Username, user.Username);
+
 			return true;
 		}
+
+		private void SubscribeToPrivateChannel(string self, string other)
+		{
+			var channel1 = $"chat:{self}_{other}";
+			var channel2 = $"chat:{other}_{self}";
+
+			RedisService.Subscriber.Subscribe(channel1, (channel, message) =>
+			{
+				HandleIncomingMessage(channel, message, other);
+			});
+
+			RedisService.Subscriber.Subscribe(channel2, (channel, message) =>
+			{
+				HandleIncomingMessage(channel, message, other);
+			});
+		}
+
+		public void HandleIncomingMessage(RedisChannel channel, RedisValue message, string senderUsername)
+		{
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				var msg = JsonConvert.DeserializeObject<MessageModel>(message);
+
+				var contact = Contacts.FirstOrDefault(c => c.Contactname == senderUsername);
+				if (contact == null)
+				{
+					// 如果该联系人不在列表中，说明是首次消息，添加
+					contact = new ContactModel
+					{
+						Contactname = senderUsername,
+						ImageSource = msg.ImageSource, // 可以根据情况优化
+						Messages = new ObservableCollection<MessageModel>(),
+						IsGroup = false
+					};
+					Contacts.Add(contact);
+				}
+
+				contact.Messages.Add(msg);
+
+				// 未读消息计数等逻辑可扩展
+			});
+		}
+
 		public bool AddGroup(GroupModel group)
 		{
 			bool exists = Contacts.Any(c => c.Contactname == group.GroupName);
@@ -155,6 +209,30 @@ namespace SupperChat.MVVM.ViewModel
 				Contacts.Add(contact);
 			}
 		}
+
+		private async void LoadFriends()
+		{
+			var friends = await ChatService.GetFriendsAsync(CurrentUser.Username);
+
+			Contacts.Clear(); // 先清空当前列表
+
+			foreach (var friendUsername in friends)
+			{
+				var userInfo = await ChatService.SearchUserAsync(friendUsername);
+				if (userInfo != null)
+				{
+					Contacts.Add(new ContactModel
+					{
+						Contactname = userInfo.Username,
+						Nickname = userInfo.Nickname,
+						ImageSource = userInfo.AvatarUrl,
+						Messages = new ObservableCollection<MessageModel>(),
+						IsGroup = false
+					});
+				}
+			}
+		}
+
 
 		private async void LoadMessagesForSelectedContact()
 		{

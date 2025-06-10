@@ -13,6 +13,8 @@
     <None Remove="Icons\1.jpg" />
     <None Remove="Icons\add.png" />
     <None Remove="Icons\camera.png" />
+    <None Remove="Icons\chat_icon.png" />
+    <None Remove="Icons\contacts_icon.png" />
     <None Remove="Icons\phone.png" />
     <None Remove="Icons\questionMark.png" />
     <None Remove="Icons\send.png" />
@@ -32,6 +34,9 @@
     <Content Include="Icons\camera.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Icons\chat_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icons\phone.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -47,8 +52,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Icons\contacts_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.37" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
   </ItemGroup>

@@ -47,11 +47,17 @@ namespace SupperChat.Service
             });
         }
 
-        public static async Task<List<ContactModel>> GetContactsAsync(string username)
-        {
-            // 可以扩展存好友列表，如存个 Set: contacts:username
-            return new List<ContactModel>();  // 初次登录无联系人
-        }
+		public static async Task<List<ContactModel>> GetContactsAsync(string username)
+		{
+			// 如果未使用参数 "username"，可以考虑删除它以解决 IDE0060  
+			// 或者，如果未来可能需要使用它，可以保留并添加一个注释说明其用途  
+			_ = username; // 添加此行以避免 IDE0060 警告  
+
+			// 修复 CS1998：添加一个异步操作，例如 Task.CompletedTask  
+			await Task.CompletedTask;
+
+			return new List<ContactModel>(); // 初次登录无联系人  
+		}
 
 		public static async Task<UserModel> SearchUserAsync(string username)
 		{

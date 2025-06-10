@@ -1,6 +1,7 @@
 ﻿using SupperChat.Core;
 using SupperChat.MVVM.Model;
 using SupperChat.Service;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -8,11 +9,15 @@ namespace SupperChat.MVVM.ViewModel
 {
 	public class AddFriendOrGroupViewModel : ObservableObject
 	{
+		private readonly MainViewModel _mainViewModel;
+
+		public UserModel CurrentUser { get; }
+
 		public ICommand SearchFriendCommand { get; }
 		public ICommand SearchGroupCommand { get; }
+
 		public Action<UserModel> OnFriendFound { get; set; }
 		public Action<GroupModel> OnGroupFound { get; set; }
-
 
 		private string _searchText;
 		public string SearchText
@@ -28,8 +33,11 @@ namespace SupperChat.MVVM.ViewModel
 			set { _selectedTab = value; OnPropertyChanged(); }
 		}
 
-		public AddFriendOrGroupViewModel()
+		public AddFriendOrGroupViewModel(UserModel currentUser, MainViewModel mainViewModel)
 		{
+			CurrentUser = currentUser;
+			_mainViewModel = mainViewModel;
+
 			SearchFriendCommand = new RelayCommand(o => SearchFriend());
 			SearchGroupCommand = new RelayCommand(o => SearchGroup());
 		}
@@ -42,17 +50,47 @@ namespace SupperChat.MVVM.ViewModel
 				return;
 			}
 
-			var user = await ChatService.SearchUserAsync(SearchText.Trim());
+			var targetUsername = SearchText.Trim();
+
+			var user = await ChatService.SearchUserAsync(targetUsername);
 			if (user == null)
 			{
 				MessageBox.Show("未找到该用户！");
 				return;
 			}
 
-			// 找到了用户，回调通知 MainViewModel 添加到联系人列表
-			OnFriendFound?.Invoke(user);
+			// 添加到 Redis 好友列表中（双向关系）
+			bool success = await ChatService.AddFriendAsync(CurrentUser.Username, targetUsername);
+			if (success)
+			{
+				// 订阅私聊频道
+				SubscribeToPrivateChannel(CurrentUser.Username, targetUsername);
 
-			MessageBox.Show("添加成功！");
+				// 通知主视图模型添加联系人
+				OnFriendFound?.Invoke(user);
+
+				MessageBox.Show("添加成功！");
+			}
+			else
+			{
+				MessageBox.Show("添加失败，可能已存在该好友！");
+			}
+		}
+
+		private void SubscribeToPrivateChannel(string self, string other)
+		{
+			var channel1 = $"chat:{self}_{other}";
+			var channel2 = $"chat:{other}_{self}";
+
+			RedisService.Subscriber.Subscribe(channel1, (channel, message) =>
+			{
+				_mainViewModel.HandleIncomingMessage(channel, message, other);
+			});
+
+			RedisService.Subscriber.Subscribe(channel2, (channel, message) =>
+			{
+				_mainViewModel.HandleIncomingMessage(channel, message, other);
+			});
 		}
 
 		private async void SearchGroup()
@@ -74,6 +112,5 @@ namespace SupperChat.MVVM.ViewModel
 
 			MessageBox.Show("添加成功！");
 		}
-
 	}
 }
