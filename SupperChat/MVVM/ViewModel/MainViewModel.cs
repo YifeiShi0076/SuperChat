@@ -135,6 +135,9 @@ namespace SupperChat.MVVM.ViewModel
 			{
 				var msg = JsonConvert.DeserializeObject<MessageModel>(message);
 
+				if (msg.SenderUsername == _currentUser.Username)
+					return;                 // 自己的消息不再处理
+
 				var contact = Contacts.FirstOrDefault(c => c.Contactname == senderUsername);
 				if (contact == null)
 				{
