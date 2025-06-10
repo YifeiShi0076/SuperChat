@@ -1,30 +1,73 @@
-﻿<Window x:Class="SupperChat.MVVM.View.ConnectWindow"  
-       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
-       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
-       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
-       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
-       xmlns:local="clr-namespace:SupperChat.MVVM.View"  
-       mc:Ignorable="d"  
-       Title="连接目标Redis服务器" Height="250" Width="400"
-        WindowStartupLocation="CenterScreen">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+﻿<Window x:Class="SupperChat.MVVM.View.ConnectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="连接 Redis 服务器"
+        WindowStartupLocation="CenterScreen"
+        Height="350" Width="360"
+        Background="#FFFAFAFA">
 
-        <TextBlock Grid.Row="0"
-           Text="服务器IP：" FontWeight="Bold"/>
-        <TextBox Grid.Row="0" Margin="60,0,0,10"  
-                Text="{Binding Host, UpdateSourceTrigger=PropertyChanged}"  />
-        <TextBlock Grid.Row="1"
-   Text="端口号：" FontWeight="Bold"/>
-        <TextBox Grid.Row="1" Margin="60,0,0,10"  
-                Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}"  />
-        <Button Grid.Row="2" Margin="0,10,0,0"  
-                Width="100"
-               Content="连接" Command="{Binding ConnectCommand}" />
+    <!-- 采用 Border + DropShadowEffect，避免 ShadowAssist/Card 版本差异 -->
+    <Grid>
+        <Border Background="#B0CCE1"
+                CornerRadius="12"
+                Padding="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <Border.Effect>
+                <DropShadowEffect Color="Black"
+                                  Opacity="0.25"
+                                  BlurRadius="15"
+                                  ShadowDepth="3"/>
+            </Border.Effect>
+
+            <!-- 主内容 -->
+            <StackPanel>
+
+                <!-- 顶部标题 -->
+                <StackPanel Orientation="Horizontal"
+                            Margin="0 0 0 20"
+                            VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="ServerNetwork"
+                                             Width="32" Height="32"
+                                             Margin="0 0 8 0"/>
+                    <TextBlock Text="Redis 服务器连接"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- 服务器 IP 输入 -->
+                <StackPanel Margin="0 0 0 12">
+                    <TextBlock Text="服务器 IP" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Host, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32"
+                             Margin="0 6 0 0"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"
+                             materialDesign:HintAssist.Hint="请输入 IP 地址"/>
+                </StackPanel>
+
+                <!-- 端口号输入 -->
+                <StackPanel Margin="0 0 0 24">
+                    <TextBlock Text="端口号" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32"
+                             Margin="0 6 0 0"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"
+                             materialDesign:HintAssist.Hint="默认 6379"/>
+                </StackPanel>
+
+                <!-- 连接按钮 -->
+                <Button Content="连接"
+                        Width="100"
+                        HorizontalAlignment="Center"
+                        Command="{Binding ConnectCommand}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
