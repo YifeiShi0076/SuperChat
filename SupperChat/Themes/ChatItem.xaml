@@ -23,7 +23,11 @@
                                     Visibility="{Binding IsSelf, Converter={StaticResource BoolToVisibilityConverter1}, ConverterParameter=False}">
                             <Ellipse Width="30" Height="30" Margin="5">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding ImageSource}" Stretch="UniformToFill"/>
+                                    <ImageBrush Stretch="Uniform">
+                                        <ImageBrush.ImageSource>
+                                            <Binding Path="ImageSource" FallbackValue="./Icons/questionMark.png" />
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
 

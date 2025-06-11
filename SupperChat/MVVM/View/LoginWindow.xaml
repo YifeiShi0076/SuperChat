@@ -52,11 +52,15 @@
                 <StackPanel Visibility="{Binding IsRegistering, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock Text="昵称" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding Nickname, UpdateSourceTrigger=PropertyChanged}"
-                             Height="32" Margin="0 6 0 16"/>
+                             Height="32" Margin="0 6 0 16"
+                             FontSize="14"
+                             VerticalAlignment="Center"/>
 
                     <TextBlock Text="个性签名" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding Signature, UpdateSourceTrigger=PropertyChanged}"
-                             Height="32" Margin="0 6 0 16"/>
+                             Height="32" Margin="0 6 0 16"
+                             FontSize="14"
+                             VerticalAlignment="Center"/>
 
                     <!-- 头像预览 -->
                     <Ellipse Width="60" Height="60" Stroke="Gray" StrokeThickness="1" Margin="0 0 0 8">
