@@ -185,7 +185,8 @@ namespace SupperChat.MVVM.ViewModel
 			// 🟢 订阅群聊频道
 			ChatService.SubscribeGroup(group.GroupName, message =>
 			{
-				if (message.SenderUsername == _currentUser.Username)
+				message.IsSelf = (message.SenderUsername == _currentUser.Username);
+				if (message.IsSelf)
 					return;
 
 				var targetContact = Contacts.FirstOrDefault(c => c.Contactname == group.GroupName);
@@ -271,7 +272,8 @@ namespace SupperChat.MVVM.ViewModel
 				ImageSource = _currentUser.AvatarUrl,
 				Message = Message,
 				Time = DateTime.Now,
-				IsNativeOrigin = true
+				IsNativeOrigin = true,
+				IsSelf = true
 			};
 
 			// 简单判断：如果是群聊，发群消息，否则单聊
@@ -318,10 +320,12 @@ namespace SupperChat.MVVM.ViewModel
 				return;
 			}
 
-			// 插入到聊天记录最前面
+			// 插入到聊天记录最前面，并标记是否为自己发送
 			for (int i = history.Count - 1; i >= 0; i--)
 			{
-				contact.Messages.Insert(0, history[i]);
+				var msg = history[i];
+				msg.IsSelf = (msg.SenderUsername == _currentUser.Username);
+				contact.Messages.Insert(0, msg);
 			}
 
 			contact.CurrentPage++;
