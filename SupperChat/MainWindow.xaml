@@ -30,7 +30,7 @@
 
 
         <Border Grid.ColumnSpan="3"
-              Background="White"
+              Background="#FFE5E5E5"
               MouseDown="Border_MouseDown">
 
             <Grid HorizontalAlignment="Stretch">
@@ -166,7 +166,7 @@
                                 <Binding Path="CurrentUser.AvatarUrl" FallbackValue="./Icons/questionMark.png" />
                             </ImageBrush.ImageSource>
                         </ImageBrush>
-                        
+
                     </Ellipse.Fill>
                 </Ellipse>
 
@@ -263,13 +263,20 @@
                     <Image Source="/Icons/add.png"
                            Width="20" Height="20"
                            RenderOptions.BitmapScalingMode="Fant"
-                           Margin="5,5,5,0"/>
+                           Margin="5,-10,5,0"/>
 
 
-                    <Image Source="/Icons/send.png"
-                           Width="20" Height="20"
-                           RenderOptions.BitmapScalingMode="Fant"
-                           Margin="5,5,16,0"/>
+                    <Button Width="30" Height="30"
+                            Command="{Binding SendCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ToolTip="发送消息"
+                            Margin="5,-10,16,0"
+                            Cursor="Hand">
+                        <Image Source="/Icons/send.png"
+                               Width="20" Height="20"
+                               RenderOptions.BitmapScalingMode="Fant"/>
+                    </Button>
                 </StackPanel>
 
             </Grid>
