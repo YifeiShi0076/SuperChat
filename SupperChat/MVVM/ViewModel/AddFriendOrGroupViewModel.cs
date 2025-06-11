@@ -59,6 +59,12 @@ namespace SupperChat.MVVM.ViewModel
 				return;
 			}
 
+			if (user.Username == CurrentUser.Username)
+			{
+				MessageBox.Show("不能添加自己为好友！");
+				return;
+			}
+
 			// 添加到 Redis 好友列表中（双向关系）
 			bool success = await ChatService.AddFriendAsync(CurrentUser.Username, targetUsername);
 			if (success)
