@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:LoginViewModel}"
         Title="用户注册 / 登录"
         WindowStartupLocation="CenterScreen"
-        Width="480" Height="560"
+        Width="480" Height="700"
         Background="#FFFAFAFA">
 
     <!-- 使用单列栅格，将卡片水平居中，避免大片空白 -->
@@ -54,17 +54,24 @@
                     <TextBox Text="{Binding Nickname, UpdateSourceTrigger=PropertyChanged}"
                              Height="32" Margin="0 6 0 16"
                              FontSize="14"
-                             VerticalAlignment="Center"/>
+                             VerticalAlignment="Center"
+                             materialDesign:HintAssist.Hint="请输入昵称"/>
 
                     <TextBlock Text="个性签名" FontWeight="SemiBold"/>
                     <TextBox Text="{Binding Signature, UpdateSourceTrigger=PropertyChanged}"
                              Height="32" Margin="0 6 0 16"
                              FontSize="14"
-                             VerticalAlignment="Center"/>
+                             VerticalAlignment="Center"
+                             materialDesign:HintAssist.Hint="请输入个性签名"/>
 
                     <!-- 头像预览 -->
                     <Ellipse Width="60" Height="60" Stroke="Gray" StrokeThickness="1" Margin="0 0 0 8">
                         <Ellipse.Fill>
+                            <!--<ImageBrush Stretch="Uniform">
+                                <ImageBrush.ImageSource>
+                                    <Binding Path="AvatarUrl" FallbackValue="/Icons/questionMark.png" />
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>-->
                             <ImageBrush ImageSource="{Binding AvatarUrl}" Stretch="UniformToFill"/>
                         </Ellipse.Fill>
                     </Ellipse>
